@@ -1,0 +1,19 @@
+{{- if .Values.ingress.traefik.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ks-guestbook-traefik
+  annotations:
+    "kubernetes.io/ingress.class": "traefik"
+spec:
+  entryPoints:
+    - {{ .Values.ingress.traefik.entryPoint }}
+  routes:
+  - match: Host(`{{ .Values.ingress.traefik.host }}`)
+    kind: Rule
+    services:
+    - name: {{ template "helm-guestbook.fullname" . }}
+      port: {{ .Values.service.port }}
+  tls:
+    certResolver: default
+{{- end }}
